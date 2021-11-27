@@ -97,6 +97,7 @@ export default function DContent() {
               </div>
               <div class="mt-5 sm:mt-6">
                 <button
+                  autoFocus
                   onClick={async () => {
                     setSucces(false);
                     setCurrenTicket(null);
@@ -218,6 +219,7 @@ export default function DContent() {
                               </div>
                               <div class="ml-4 flex-shrink-0">
                                 <button
+                                  autoFocus
                                   onClick={async () => {
                                     verifyVoucher(currentTicket.code);
                                   }}
