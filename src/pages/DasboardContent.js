@@ -24,16 +24,23 @@ export default function DContent() {
   }
 
   async function verifyVoucher(code) {
+    setVerifying(true);
     try {
       await axios.get(voucherServer + "/voucher/verify?code=" + code);
       await getVerified();
       // setSucces(true);
       setCurrenTicket(null);
+      notification.success({
+        message: "Ticket Verified Successfully",
+        placement: "bottomRight",
+      });
     } catch (e) {
       notification.error({
         message: "Something went wrong",
         placement: "bottomRight",
       });
+    } finally {
+      setVerifying(false);
     }
   }
 
@@ -116,6 +123,7 @@ export default function DContent() {
       <Row gutter={4}>
         <Col sm={16} md={16}>
           <Card
+            loading={verifying}
             extra={
               <Search
                 size="large"
@@ -133,6 +141,9 @@ export default function DContent() {
                       voucherServer + "/voucher/one?code=" + v
                     );
                     message.success("Valid Ticket found");
+                    if (!nn?.data?.verified) {
+                      verifyVoucher(nn.data?.code);
+                    }
                     setCurrenTicket(nn.data);
                     setLoading(false);
                   } catch (e) {
