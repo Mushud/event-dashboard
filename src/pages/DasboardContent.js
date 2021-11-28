@@ -27,7 +27,8 @@ export default function DContent() {
     try {
       await axios.get(voucherServer + "/voucher/verify?code=" + code);
       await getVerified();
-      setSucces(true);
+      // setSucces(true);
+      setCurrenTicket(null);
     } catch (e) {
       notification.error({
         message: "Something went wrong",
@@ -42,7 +43,7 @@ export default function DContent() {
 
   return (
     <div class="min-h-screen bg-gray-50 flex flex-col  py-12 sm:px-6 lg:px-8">
-      {success && (
+      {/* {true && (
         <div class="fixed z-10 inset-0 overflow-y-auto">
           <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -111,7 +112,7 @@ export default function DContent() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       <Row gutter={4}>
         <Col sm={16} md={16}>
           <Card
@@ -131,14 +132,14 @@ export default function DContent() {
                     const nn = await axios.get(
                       voucherServer + "/voucher/one?code=" + v
                     );
-                    message.success("Voucher found");
+                    message.success("Valid Ticket found");
                     setCurrenTicket(nn.data);
                     setLoading(false);
                   } catch (e) {
                     setLoading(false);
                     setLoading(false);
                     notification.error({
-                      message: "Cannot find Voucher",
+                      message: "Invalid Ticket",
                       placement: "bottomRight",
                     });
                   }
@@ -174,7 +175,7 @@ export default function DContent() {
                       </dt>
                       <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                         {currentTicket && currentTicket.verified ? (
-                          <Tag color="green">Verified</Tag>
+                          <Tag color="green">Valid Ticket</Tag>
                         ) : (
                           <Tag color="red">Not Verified</Tag>
                         )}
