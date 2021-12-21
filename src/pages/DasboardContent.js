@@ -68,7 +68,7 @@ export default function DContent() {
       style={{ height: "83vh" }}
       class="bg-gray-50 flex flex-col  py-12 sm:px-6 lg:px-8"
     >
-      <div class="relative bg-white overflow-hidden">
+      <div class="relative bg-white ">
         <div class="hidden lg:block lg:absolute lg:inset-0" aria-hidden="true">
           <svg
             class="absolute top-0 left-1/2 transform translate-x-64 -translate-y-8"
@@ -165,6 +165,7 @@ export default function DContent() {
                     <input
                       autoFocus
                       value={mCode}
+                      // autoComplete="off"
                       onChange={(t) => {
                         setmCode(t.target.value);
                         setCurrenTicket(null);
@@ -234,6 +235,9 @@ export default function DContent() {
                         </div>
                       </div>
                     </div>
+                    <h2 class="text-2xl font-extrabold text-blue-500 sm:text-3xl">
+                      Tickets has been scanned
+                    </h2>
                   </div>
                 )}
               </div>
@@ -279,14 +283,39 @@ export default function DContent() {
                     fill="url(#4f4f415c-a0e9-44c2-9601-6ded5a34a13e)"
                   />
                 </svg>
-                <div class="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
+                <div class="relative mx-auto w-full rounded-lg  lg:max-w-md">
                   <button
                     type="button"
-                    class="relative block w-full bg-white rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    class="relative block w-full bg-white  shadow-lg rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     <span class="sr-only">Watch our video to learn more</span>
                     <img class="w-full" src={nEvent?.images[0]} alt="" />
                   </button>
+                  <div className="">
+                    <div class="flow-root mt-6">
+                      <ul role="list" class="-my-5 divide-y divide-gray-200">
+                        {nEvent?.verif.map((item) => (
+                          <li class="p-5 rounded-lg shadow-lg mb-3 ">
+                            <div class="relative   focus-within:ring-2 focus-within:ring-indigo-500">
+                              <h3 class="text-sm font-semibold text-gray-800">
+                                <h2 href="#">
+                                  {/* <!-- Extend touch target to entire panel --> */}
+                                  <span
+                                    class="absolute inset-0"
+                                    aria-hidden="true"
+                                  ></span>
+                                  {item?._id}
+                                </h2>
+                              </h3>
+                              <p class="mt-1 text-sm text-gray-600 line-clamp-2">
+                                {item?.count}
+                              </p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
