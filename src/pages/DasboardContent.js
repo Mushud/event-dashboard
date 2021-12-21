@@ -235,8 +235,8 @@ export default function DContent() {
                         </div>
                       </div>
                     </div>
-                    <h2 class="text-2xl font-extrabold text-blue-500 sm:text-3xl">
-                      Tickets has been scanned
+                    <h2 class="text-2xl font-extrabold text-red-500 sm:text-3xl">
+                      Ticket already scanned
                     </h2>
                   </div>
                 )}
