@@ -2,8 +2,10 @@ import { Card, Col, Empty, message, notification, Row, Tag } from "antd";
 import Search from "antd/lib/input/Search";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { voucherServer } from "../config";
+import { hyperApi, voucherServer } from "../config";
 import moment from "moment";
+import Button from "../components/Button";
+import { toaster } from "evergreen-ui";
 
 export default function DContent() {
   const [loading, setLoading] = useState(false);
@@ -11,6 +13,15 @@ export default function DContent() {
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState([]);
   const [mCode, setmCode] = useState("");
+
+  const [nEvent, setEvent] = useState(null);
+
+  async function getEvent() {
+    const nEvent = JSON.parse(sessionStorage.getItem("event"));
+    // console.log(nEvent);
+
+    setEvent(nEvent);
+  }
 
   const [success, setSucces] = useState(false);
 
@@ -26,14 +37,17 @@ export default function DContent() {
   async function verifyVoucher(code) {
     setVerifying(true);
     try {
-      await axios.get(voucherServer + "/voucher/verify?code=" + code);
-      await getVerified();
+      await axios.get(
+        hyperApi +
+          "/events/ticket/one/verify?id=" +
+          code +
+          "&verificationCode=" +
+          nEvent.verificationCode
+      );
+      // await getVerified();
       // setSucces(true);
       setCurrenTicket(null);
-      notification.success({
-        message: "Ticket Verified Successfully",
-        placement: "bottomRight",
-      });
+      toaster.success("Ticket verified successfully");
     } catch (e) {
       notification.error({
         message: "Something went wrong",
@@ -45,82 +59,242 @@ export default function DContent() {
   }
 
   useEffect(() => {
-    getVerified();
+    // getVerified();
+    getEvent();
   }, []);
 
   return (
-    <div class="min-h-screen bg-gray-50 flex flex-col  py-12 sm:px-6 lg:px-8">
-      {/* {true && (
-        <div class="fixed z-10 inset-0 overflow-y-auto">
-          <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-
-            <span
-              class="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-
-            <div
-              class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="modal-headline"
-            >
-              <div>
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-                  <svg
-                    class="h-6 w-6 text-green-600"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <div class="mt-3 text-center sm:mt-5">
-                  <h3
-                    class="text-lg leading-6 font-medium text-gray-900"
-                    id="modal-headline"
-                  >
-                    Verification Successful
-                  </h3>
-                  <div class="mt-2">
-                    <p class="text-sm text-gray-500">
-                      Voucher has been verified successfully, press okay to
-                      continue.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-5 sm:mt-6">
-                <button
-                  autoFocus
-                  onClick={async () => {
-                    setSucces(false);
-                    setCurrenTicket(null);
-                  }}
-                  type="button"
-                  class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-                >
-                  Ok
-                </button>
-              </div>
-            </div>
-          </div>
+    <div
+      style={{ height: "83vh" }}
+      class="bg-gray-50 flex flex-col  py-12 sm:px-6 lg:px-8"
+    >
+      <div class="relative bg-white overflow-hidden">
+        <div class="hidden lg:block lg:absolute lg:inset-0" aria-hidden="true">
+          <svg
+            class="absolute top-0 left-1/2 transform translate-x-64 -translate-y-8"
+            width="640"
+            height="784"
+            fill="none"
+            viewBox="0 0 640 784"
+          >
+            <defs>
+              <pattern
+                id="9ebea6f4-a1f5-4d96-8c4e-4c2abf658047"
+                x="118"
+                y="0"
+                width="20"
+                height="20"
+                patternUnits="userSpaceOnUse"
+              >
+                <rect
+                  x="0"
+                  y="0"
+                  width="4"
+                  height="4"
+                  class="text-gray-200"
+                  fill="currentColor"
+                />
+              </pattern>
+            </defs>
+            <rect
+              y="72"
+              width="640"
+              height="640"
+              class="text-gray-50"
+              fill="currentColor"
+            />
+            <rect
+              x="118"
+              width="404"
+              height="784"
+              fill="url(#9ebea6f4-a1f5-4d96-8c4e-4c2abf658047)"
+            />
+          </svg>
         </div>
-      )} */}
-      <Row gutter={4}>
+
+        <div class="relative pt-6 pb-16 sm:pb-24 lg:pb-32">
+          <main class="mt-16 mx-auto max-w-7xl px-4 sm:mt-24 sm:px-6 lg:mt-32">
+            <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+              <div class="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
+                <h1>
+                  <span class="block text-sm font-semibold uppercase tracking-wide text-gray-500 sm:text-base lg:text-sm xl:text-base">
+                    {nEvent?.title}
+                  </span>
+                  <span class="mt-1 block text-4xl tracking-tight font-extrabold sm:text-5xl xl:text-6xl">
+                    <span class="block text-gray-900">Scan QR Code </span>
+                    <span class="block text-blue-600">to verify</span>
+                  </span>
+                </h1>
+                <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                  {nEvent?.about}
+                </p>
+                <div class="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
+                  <p class="text-base font-medium text-gray-900">
+                    Scan QR code to verify
+                  </p>
+                  <form
+                    onSubmit={async (t) => {
+                      t.preventDefault();
+                      const v = t.target.referenceCode.value;
+
+                      setLoading(true);
+                      setmCode("");
+                      try {
+                        const nn = await axios.get(
+                          hyperApi +
+                            "/events/tickets/one?reference=" +
+                            v +
+                            "&verificationCode=" +
+                            nEvent?.verificationCode
+                        );
+                        console.log(nn?.data);
+                        message.success("Valid Ticket found");
+                        if (!nn?.data?.verified) {
+                          verifyVoucher(nn.data?._id);
+                        }
+                        setCurrenTicket(nn.data);
+                        setLoading(false);
+                      } catch (e) {
+                        setLoading(false);
+                        setLoading(false);
+                        toaster.danger("Invalid Ticket Code");
+                      }
+                    }}
+                    class="mt-3 sm:flex"
+                  >
+                    <input
+                      autoFocus
+                      value={mCode}
+                      onChange={(t) => {
+                        setmCode(t.target.value);
+                        setCurrenTicket(null);
+                      }}
+                      name="referenceCode"
+                      id="referenceCode"
+                      class="py-3 mr-5 px-4 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md"
+                      placeholder="Scan Code to autofill"
+                    />
+                    <div>
+                      <Button
+                        loading={loading || verifying}
+                        type="submit"
+                        title="Search"
+                      />
+                    </div>
+                  </form>
+                </div>
+                {currentTicket && (
+                  <div class="bg-white mt-10">
+                    <div class=" mx-auto ">
+                      <div class="divide-y-2 divide-gray-200">
+                        <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+                          <h2 class="text-2xl font-extrabold text-gray-900 sm:text-3xl">
+                            Ticket Details
+                          </h2>
+                          <div class="mt-8 grid grid-cols-1 gap-12 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:mt-0 lg:col-span-2">
+                            <div>
+                              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                Attendee
+                              </h3>
+                              <dl class="mt-2 text-base text-gray-500">
+                                <div>
+                                  <dt class="sr-only">Email</dt>
+                                  <dd>{currentTicket?.user?.email}</dd>
+                                </div>
+                                <div class="mt-1">
+                                  <dt class="sr-only">Phone number</dt>
+                                  <dd>{currentTicket?.user?.phonenumber}</dd>
+                                </div>
+                              </dl>
+                            </div>
+                            <div className="ml-10">
+                              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                Verification Status
+                              </h3>
+                              <dl class="mt-2 text-base text-gray-500">
+                                <div>
+                                  <dt class="sr-only">Status</dt>
+                                  <dd>
+                                    {currentTicket?.verified ? "Verified" : "-"}
+                                  </dd>
+                                </div>
+                                <div class="mt-1">
+                                  <dt class="sr-only">Date Verified</dt>
+                                  <dd>
+                                    {currentTicket?.verified
+                                      ? moment(
+                                          currentTicket?.dateVerified
+                                        ).format("MMM, Do YYYY hh:mm A")
+                                      : "-"}
+                                  </dd>
+                                </div>
+                              </dl>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div class="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
+                <svg
+                  class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8 scale-75 origin-top sm:scale-100 lg:hidden"
+                  width="640"
+                  height="784"
+                  fill="none"
+                  viewBox="0 0 640 784"
+                  aria-hidden="true"
+                >
+                  <defs>
+                    <pattern
+                      id="4f4f415c-a0e9-44c2-9601-6ded5a34a13e"
+                      x="118"
+                      y="0"
+                      width="20"
+                      height="20"
+                      patternUnits="userSpaceOnUse"
+                    >
+                      <rect
+                        x="0"
+                        y="0"
+                        width="4"
+                        height="4"
+                        class="text-gray-200"
+                        fill="currentColor"
+                      />
+                    </pattern>
+                  </defs>
+                  <rect
+                    y="72"
+                    width="640"
+                    height="640"
+                    class="text-gray-50"
+                    fill="currentColor"
+                  />
+                  <rect
+                    x="118"
+                    width="404"
+                    height="784"
+                    fill="url(#4f4f415c-a0e9-44c2-9601-6ded5a34a13e)"
+                  />
+                </svg>
+                <div class="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
+                  <button
+                    type="button"
+                    class="relative block w-full bg-white rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    <span class="sr-only">Watch our video to learn more</span>
+                    <img class="w-full" src={nEvent?.images[0]} alt="" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      {/* <Row gutter={4}>
         <Col sm={16} md={16}>
           <Card
             loading={verifying}
@@ -267,7 +441,7 @@ export default function DContent() {
                 {verified.map((item) => (
                   <li class="py-4">
                     <div class="flex space-x-3">
-                      {/* <img class="h-6 w-6 rounded-full" src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80" alt="" /> */}
+                    
                       <div class="flex-1 space-y-1">
                         <div class="flex items-center justify-between">
                           <h3 class="text-sm font-medium">{item._id}</h3>
@@ -284,7 +458,7 @@ export default function DContent() {
             </div>
           </Card>
         </Col>
-      </Row>
+      </Row> */}
     </div>
   );
 }
