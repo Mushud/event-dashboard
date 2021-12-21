@@ -165,7 +165,7 @@ export default function DContent() {
                     <input
                       autoFocus
                       value={mCode}
-                      // autoComplete="off"
+                      autoComplete="off"
                       onChange={(t) => {
                         setmCode(t.target.value);
                         setCurrenTicket(null);
