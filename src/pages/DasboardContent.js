@@ -34,6 +34,19 @@ export default function DContent() {
     }
   }
 
+  async function getEventByVerificationCode(verificationCode) {
+    try {
+      const nEvent = await axios.get(
+        hyperApi + "/events/one?verificationCode=" + verificationCode
+      );
+
+      sessionStorage.setItem("event", JSON.stringify(nEvent.data));
+      getEvent();
+    } catch (e) {
+    } finally {
+    }
+  }
+
   async function verifyVoucher(code) {
     setVerifying(true);
     try {
@@ -47,6 +60,7 @@ export default function DContent() {
       // await getVerified();
       // setSucces(true);
       setCurrenTicket(null);
+      getEventByVerificationCode(nEvent?.verificationCode);
       toaster.success("Ticket verified successfully");
     } catch (e) {
       notification.error({
@@ -58,9 +72,22 @@ export default function DContent() {
     }
   }
 
+  function getTotalVerified() {
+    let total = 0;
+    for (var i = 0; i < nEvent?.verif?.length; i++) {
+      total += nEvent?.verif[i]?.count;
+    }
+
+    return total;
+  }
+
   useEffect(() => {
     // getVerified();
     getEvent();
+  }, []);
+
+  useEffect(() => {
+    nEvent && getEventByVerificationCode(nEvent?.verificationCode);
   }, []);
 
   return (
@@ -313,6 +340,23 @@ export default function DContent() {
                             </div>
                           </li>
                         ))}
+                        <li class="p-5 rounded-lg shadow-lg mb-3 ">
+                          <div class="relative   focus-within:ring-2 focus-within:ring-indigo-500">
+                            <h3 class="text-lg font-semibold text-gray-800">
+                              <h2 href="#">
+                                {/* <!-- Extend touch target to entire panel --> */}
+                                <span
+                                  class="absolute inset-0"
+                                  aria-hidden="true"
+                                ></span>
+                                Total
+                              </h2>
+                            </h3>
+                            <p class="mt-1 text-sm text-gray-600 line-clamp-2">
+                              {getTotalVerified()}
+                            </p>
+                          </div>
+                        </li>
                       </ul>
                     </div>
                   </div>
